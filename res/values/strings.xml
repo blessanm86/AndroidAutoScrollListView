@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">SlideshowDemo</string>
+    <string name="horizontal_button_label">Horizontal Demo</string>
+    <string name="vertical_button_label">Vertical Demo</string>
+</resources>
