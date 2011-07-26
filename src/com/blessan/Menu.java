@@ -18,4 +18,15 @@ public class Menu extends Activity {
     	Intent horizontalSlideshowIntent = new Intent(Menu.this,HorizonalSlideshow.class);
         startActivity(horizontalSlideshowIntent);
     }
+    
+    /** Vertical Button Handler*/
+    public void verticalButtonHandler(View target){
+    	Intent verticalSlideshowIntent = new Intent(Menu.this,VerticalSlideshow.class);
+        startActivity(verticalSlideshowIntent);
+    }
+    
+    public void onBackPressed(){
+		super.onBackPressed();
+		finish();
+	}
 }

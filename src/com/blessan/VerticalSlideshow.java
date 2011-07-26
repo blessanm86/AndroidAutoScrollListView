@@ -2,11 +2,13 @@ package com.blessan;
 
 import java.util.Timer;
 import java.util.TimerTask;
+
 import android.app.Activity;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewTreeObserver;
 import android.view.View.OnClickListener;
@@ -15,89 +17,49 @@ import android.view.animation.AccelerateInterpolator;
 import android.view.animation.Animation;
 import android.view.animation.ScaleAnimation;
 import android.widget.Button;
-import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
-public class HorizonalSlideshow extends Activity {
-	private LinearLayout  horizontalOuterLayout;
-	private HorizontalScrollView horizontalScrollview;
-	private TextView horizontalTextView;
-	private int scrollMax;
-	private int scrollPos =	0;
+public class VerticalSlideshow extends Activity {
+	private LinearLayout  verticalOuterLayout;
+	private ScrollView verticalScrollview;
+	private TextView verticalTextView;
+	private int verticalScrollMax;
+	private Timer scrollTimer		=	null;
 	private TimerTask clickSchedule;
 	private TimerTask scrollerSchedule;
 	private TimerTask faceAnimationSchedule;
-	private Button clickedButton	=	null;
-	private Timer scrollTimer		=	null;
+	private int scrollPos =	0;
+	private Boolean isFaceDown      =   true;
 	private Timer clickTimer		=	null;
 	private Timer faceTimer         =   null;
-	private Boolean isFaceDown      =   true;
-	private String[] nameArray = {"Apple", "Banana", "Grapes", "Orange", "Strawberry","Apple", "Banana"};
-	private String[] imageNameArray = {"apple", "banana", "grapes", "orange", "strawberry","apple", "banana"};
+	private Button clickedButton	=	null;
+	private String[] nameArray = {"Apple", "Banana", "Grapes", "Orange", "Strawberry","Apple", "Banana","Grapes"};
+	private String[] imageNameArray = {"apple", "banana", "grapes", "orange", "strawberry","apple", "banana","grapes"};
 	
-	/** Called when the activity is first created. */
-    @Override
+	@Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.horizontal_layout);
-        horizontalScrollview  = (HorizontalScrollView) findViewById(R.id.horiztonal_scrollview_id);
-        horizontalOuterLayout =	(LinearLayout)findViewById(R.id.horiztonal_outer_layout_id);
-        horizontalTextView    = (TextView)findViewById(R.id.horizontal_textview_id);
+        setContentView(R.layout.vertical_layout);
         
-        horizontalScrollview.setHorizontalScrollBarEnabled(false);
+        verticalScrollview  =   (ScrollView) findViewById(R.id.vertical_scrollview_id);
+        verticalOuterLayout =	(LinearLayout)findViewById(R.id.vertical_outer_layout_id);
+        verticalTextView    = (TextView)findViewById(R.id.vertical_textview_id);
         addImagesToView();
         
-		ViewTreeObserver vto 		=	horizontalOuterLayout.getViewTreeObserver();
+        ViewTreeObserver vto 		=	verticalOuterLayout.getViewTreeObserver();
         vto.addOnGlobalLayoutListener(new OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {
-            	horizontalOuterLayout.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+            	verticalOuterLayout.getViewTreeObserver().removeGlobalOnLayoutListener(this);
             	getScrollMaxAmount();
-            	startAutoScrolling();            	          	
+            	startAutoScrolling();
             }
         });
-    }
-    
-    public void getScrollMaxAmount(){
-    	int actualWidth = (horizontalOuterLayout.getMeasuredWidth()-512);
-    	scrollMax   = actualWidth;
-    }
-    
-    public void startAutoScrolling(){
-		if (scrollTimer == null) {
-			scrollTimer					=	new Timer();
-			final Runnable Timer_Tick 	= 	new Runnable() {
-			    public void run() {
-			    	moveScrollView();
-			    }
-			};
-			
-			if(scrollerSchedule != null){
-				scrollerSchedule.cancel();
-				scrollerSchedule = null;
-			}
-			scrollerSchedule = new TimerTask(){
-				@Override
-				public void run(){
-					runOnUiThread(Timer_Tick);
-				}
-			};
-			
-			scrollTimer.schedule(scrollerSchedule, 30, 30);
-		}
 	}
-    
-    public void moveScrollView(){
-    	scrollPos							= 	(int) (horizontalScrollview.getScrollX() + 1.0);
-		if(scrollPos >= scrollMax){
-			scrollPos						=	0;
-		}
-		horizontalScrollview.scrollTo(scrollPos, 0);
-				
-	}
-    
-    /** Adds the images to view. */
+	
+	/** Adds the images to view. */
     public void addImagesToView(){
 		for (int i=0;i<imageNameArray.length;i++){
 			final Button imageButton =	new Button(this);
@@ -136,9 +98,53 @@ public class HorizonalSlideshow extends Activity {
 			});
 			
 			LinearLayout.LayoutParams params 	=	new LinearLayout.LayoutParams(256,256);
-			params.setMargins(0, 25, 0, 25);
 			imageButton.setLayoutParams(params);
-			horizontalOuterLayout.addView(imageButton);
+			verticalOuterLayout.addView(imageButton);
+		}
+	}
+    
+    public void getScrollMaxAmount(){
+    	int actualWidth = (verticalOuterLayout.getMeasuredHeight()-(256*3));
+    	verticalScrollMax   = actualWidth;
+    }
+    
+    public void startAutoScrolling(){
+		if (scrollTimer == null) {
+			scrollTimer					=	new Timer();
+			final Runnable Timer_Tick 	= 	new Runnable() {
+			    public void run() {
+			    	moveScrollView();
+			    }
+			};
+			
+			if(scrollerSchedule != null){
+				scrollerSchedule.cancel();
+				scrollerSchedule = null;
+			}
+			scrollerSchedule = new TimerTask(){
+				@Override
+				public void run(){
+					runOnUiThread(Timer_Tick);
+				}
+			};
+			
+			scrollTimer.schedule(scrollerSchedule, 30, 30);
+		}
+	}
+    
+    public void moveScrollView(){
+    	scrollPos							= 	(int) (verticalScrollview.getScrollY() + 1.0);
+		if(scrollPos >= verticalScrollMax){
+			scrollPos						=	0;
+		}
+		verticalScrollview.scrollTo(0,scrollPos);
+		Log.e("moveScrollView","moveScrollView");		
+	}
+    
+    public void stopAutoScrolling(){
+		if (scrollTimer != null) {
+			scrollTimer.cancel();
+			scrollTimer	=	null;
 		}
 	}
     
@@ -150,7 +156,7 @@ public class HorizonalSlideshow extends Activity {
 		Animation.AnimationListener	scaleFaceAnimationListener = new Animation.AnimationListener() {			
 			@Override
 			public void onAnimationStart(Animation arg0) {
-				horizontalTextView.setText(nameArray[(Integer) clickedButton.getTag()]);
+				verticalTextView.setText(nameArray[(Integer) clickedButton.getTag()]);
 				isFaceDown = false;
 			}			
 			@Override
@@ -201,22 +207,15 @@ public class HorizonalSlideshow extends Activity {
 			public void onAnimationRepeat(Animation arg0) {}			
 			@Override
 			public void onAnimationEnd(Animation arg0) {
-				horizontalTextView.setText("");
+				verticalTextView.setText("");
 				isFaceDown = true;				
 			}
 		}; 
 		scaleFace.setAnimationListener(scaleFaceAnimationListener);
 		return scaleFace;
 	}
-    
-    public void stopAutoScrolling(){
-		if (scrollTimer != null) {
-			scrollTimer.cancel();
-			scrollTimer	=	null;
-		}
-	}
-    
-    public void onBackPressed(){
+	
+	public void onBackPressed(){
 		super.onBackPressed();
 		finish();
 	}
@@ -240,6 +239,7 @@ public class HorizonalSlideshow extends Activity {
 		scrollTimer           = null;
 		clickTimer            = null;
 		faceTimer             = null;
+		
 		super.onDestroy();
 	}
 	
