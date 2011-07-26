@@ -25,9 +25,13 @@ public class HorizonalSlideshow extends Activity {
 	private TextView horizontalTextView;
 	private int scrollMax;
 	private int scrollPos =	0;
+	private TimerTask clickSchedule;
+	private TimerTask scrollerSchedule;
+	private TimerTask faceAnimationSchedule;
 	private Button clickedButton	=	null;
 	private Timer scrollTimer		=	null;
 	private Timer clickTimer		=	null;
+	private Timer faceTimer         =   null;
 	private Boolean isFaceDown      =   true;
 	private String[] nameArray = {"Apple", "Banana", "Grapes", "Orange", "Strawberry","Apple", "Banana"};
 	private String[] imageNameArray = {"apple", "banana", "grapes", "orange", "strawberry","apple", "banana"};
@@ -69,12 +73,18 @@ public class HorizonalSlideshow extends Activity {
 			    }
 			};
 			
-			scrollTimer.schedule(new TimerTask(){
+			if(scrollerSchedule != null){
+				scrollerSchedule.cancel();
+				scrollerSchedule = null;
+			}
+			scrollerSchedule = new TimerTask(){
 				@Override
 				public void run(){
 					runOnUiThread(Timer_Tick);
 				}
-			}, 30, 30);
+			};
+			
+			scrollTimer.schedule(scrollerSchedule, 30, 30);
 		}
 	}
     
@@ -108,11 +118,19 @@ public class HorizonalSlideshow extends Activity {
 						clickedButton.startAnimation(scaleFaceUpAnimation());
 						clickedButton.setSelected(true);
 						clickTimer				=	new Timer();
-						clickTimer.schedule( new TimerTask(){
+						
+						if(clickSchedule != null) {
+							clickSchedule.cancel();
+							clickSchedule = null;
+						}
+						
+						clickSchedule = new TimerTask(){
 				        	public void run() { 
-				        		creditsScrollHandler.sendEmptyMessage(0);   
+				        		startAutoScrolling();   
 				            }
-				        }, 1500);
+				        };
+						
+						clickTimer.schedule( clickSchedule, 1500);
 					}
 				}
 			});
@@ -139,13 +157,24 @@ public class HorizonalSlideshow extends Activity {
 			public void onAnimationRepeat(Animation arg0) {}			
 			@Override
 			public void onAnimationEnd(Animation arg0) {
-				Timer faceTimer = new Timer();
-				faceTimer.schedule(new TimerTask() {					
+				if(faceTimer != null){
+					faceTimer.cancel();
+					faceTimer = null;
+				}
+				
+				faceTimer = new Timer();
+				if(faceAnimationSchedule != null){
+					faceAnimationSchedule.cancel();
+					faceAnimationSchedule = null;
+				}
+				faceAnimationSchedule = new TimerTask() {					
 					@Override
 					public void run() {
 						faceScaleHandler.sendEmptyMessage(0); 										
 					}
-				}, 750);				
+				};
+				
+				faceTimer.schedule(faceAnimationSchedule, 750);				
 			}
 		}; 
 		scaleFace.setAnimationListener(scaleFaceAnimationListener);
@@ -179,13 +208,6 @@ public class HorizonalSlideshow extends Activity {
 		scaleFace.setAnimationListener(scaleFaceAnimationListener);
 		return scaleFace;
 	}
-	
-	private Handler creditsScrollHandler = new Handler() {
-        @Override
-        public void handleMessage(Message msg) {
-        	startAutoScrolling();	
-        }
-	};
     
     public void stopAutoScrolling(){
 		if (scrollTimer != null) {
