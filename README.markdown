@@ -9,10 +9,13 @@ This uses the ScrollView. A timer is used to increment the value of the scrollba
 When the user touches the any of the pictures, the slider stops and zooms in the image for a second before
 zooms back to continue to slide.
 
-![alt text](./h1.png "Normal State")
+#####Normal Sliding
+![alt text](https://github.com/blessenm/SlideshowDemo/raw/master/h1.png "Normal State")
 
-![alt text](./h2.png "Image clicked and zoom")
+#####Sliding stops on click and the pic zooms
+![alt text](https://github.com/blessenm/SlideshowDemo/raw/master/h2.png "Image clicked and zoom")
 ####1. HorizontalSlideshow 
 The same as above but uses the horizontal scrollview.
 
-![alt text](./v1.png "Normal State")
+#####Normal Sliding
+![alt text](https://github.com/blessenm/SlideshowDemo/raw/master/v1.png "Normal State")
