@@ -19,3 +19,6 @@ The same as above but uses the horizontal scrollview.
 
 #####Normal Sliding
 ![alt text](https://github.com/blessenm/SlideshowDemo/raw/master/v1.png "Normal State")
+
+[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/blessenm/androidautoscrolllistview/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
+
