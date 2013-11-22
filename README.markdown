@@ -1,5 +1,11 @@
 ###SlideshowDemo
 
+####Latest Update
+This is just a demo that uses a couple of hacks to get the desired result. I'm trying out an alternate approach which can be found in the 'development' branch.
+I'm trying to use the [circular list adapter](https://github.com/ragunathjawahar/circular-list-adapter) to cycle through view. But I'm facing issues like unable to scroll manually and stuff.
+The code is this branch doesn't really work, you can just see a lot of trial and error code blocks. I'm not looking into this at the moment due to current commitments. But if you can do it better, pull requests are welcome.
+
+####About The Demo
 This is a demo which displays a finite set of images in a continous slider.
 There are 2 activities for a horizontal and a vertical slideshow. This was created mainly to show the credits
 of an app I worked on 'MyTaxIndia'. 
