@@ -1,4 +1,4 @@
-### SlideshowDemo
+### SlideshowDemo (Not maintained anymore. Consider it obsolete)
 
 #### Latest Update
 This is just a demo that uses a couple of hacks to get the desired result. I'm trying out an alternate approach which can be found in the 'development' branch.
